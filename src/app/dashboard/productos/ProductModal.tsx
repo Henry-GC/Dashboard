@@ -1,8 +1,6 @@
 "use client";
 import { useState, ChangeEvent, FormEvent } from "react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { Product } from "./types";
 import { SheetFooter } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";

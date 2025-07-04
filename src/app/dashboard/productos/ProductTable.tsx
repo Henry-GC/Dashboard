@@ -8,7 +8,6 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/
 import { Product } from "./types";
 import { ProductModal } from "./ProductModal";
 import { EditProductModal } from "./EditProductModal";
-import useProducts from "@/hooks/use-products";
 
 // ...eliminado initialProducts, ahora se usa el contexto
 
