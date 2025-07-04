@@ -36,7 +36,7 @@ export function LoginForm({
     onSubmit: async (values) => {
       setLoading(true)
       try {
-        const response = await Axios.post('/adm/login', values)
+        const response = await Axios.post('/adm/admLogin', values)
         localStorage.setItem('token', response.data.token)
         window.location.href = '/dashboard'
       } catch (error) {

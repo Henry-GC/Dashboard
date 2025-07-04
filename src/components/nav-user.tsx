@@ -43,7 +43,7 @@ export function NavUser({
   const { isMobile } = useSidebar()
   const logout = async () => {
     try {
-        const response = await Axios.get('/adm/logout')
+        const response = await Axios.get('/adm/admLogout')
         console.log(response.data)
         localStorage.removeItem('token')
         window.location.href = '/'
