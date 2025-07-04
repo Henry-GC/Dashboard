@@ -1,3 +1,4 @@
+"use client";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -8,8 +9,20 @@ import {
 } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function App () {
+  const router = useRouter();
+  useEffect(()=>{
+    const token : string | null = localStorage.getItem("token")
+    if (!token) {
+      router.push("/");
+    } else {
+      router.push("/dashboard/registros");
+    }
+  },[])
+
   return (
     <>
     <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
@@ -22,7 +35,7 @@ export default function App () {
             <BreadcrumbList>
               <BreadcrumbItem className="hidden md:block">
                 <BreadcrumbLink href="#">
-                  Building Your Application
+                  Dashboard
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
