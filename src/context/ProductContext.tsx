@@ -23,7 +23,7 @@ export function ProductProvider({ children }: { children: ReactNode }) {
   // Fetch products from API usando Axios
   const refreshProducts = async () => {
     try {
-      const res = await axios.get("/adm/products");
+      const res = await axios.get("/api/productos");
       setProducts(res.data || []);
       
     } catch (error) {
