@@ -61,6 +61,7 @@ export function EditProductModal({ open, onClose, product, onSave } : {
       onClose();
     } catch (err) {
       alert("Error al guardar el producto");
+        console.error("Error al guardar el producto:", err);
     } finally {
       setLoading(false);
     }

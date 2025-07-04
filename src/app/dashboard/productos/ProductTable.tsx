@@ -12,7 +12,7 @@ import { EditProductModal } from "./EditProductModal";
 // ...eliminado initialProducts, ahora se usa el contexto
 
 export function ProductTable() {
-  const { products, setProducts, refreshProducts } = useProductContext();
+  const { products, setProducts } = useProductContext();
   const [pendingProducts, setPendingProducts] = useState<Product[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -72,7 +72,8 @@ export function ProductTable() {
 
   const totalProductos = products.length;
 
-  const handleSaveEdit = (updated: Product) => {
+  const handleSaveEdit = () => {
+  // const handleSaveEdit = (updated: Product) => {
     // Aquí podrías actualizar el estado local si lo deseas
     // setProducts(prev => prev.map(p => p.id === updated.id ? updated : p));
   };

@@ -96,7 +96,7 @@ export function ProductModal({ open, onClose, onAdd, onBulkAdd }: {
   };
 
   // Excel upload handler (mock, real parsing should use xlsx or similar)
-  const handleExcel = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleExcel = () => {
     // Here you would parse the file and extract products
     // For now, just mock a couple of products
     setExcelProducts([
