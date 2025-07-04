@@ -35,17 +35,22 @@ export function EditProductModal({ open, onClose, product, onSave } : {
 
   if (!open || !form) return null;
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value, type } = e.target;
-    let val: any = value;
-    if (type === "checkbox") {
-      val = (e.target as HTMLInputElement).checked;
-    }
-    setForm(f => f ? ({
-      ...f,
-      [name]: val
-    }) : null);
-  };
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value, type } = e.target;
+        let val: string | number | boolean = value;
+
+        if (type === "checkbox") {
+            val = (e.target as HTMLInputElement).checked;
+        } else if (type === "number") {
+            val = Number(value);
+        }
+
+        setForm(f => f ? {
+            ...f,
+            [name]: val
+        } : null);
+    };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

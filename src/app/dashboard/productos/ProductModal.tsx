@@ -81,7 +81,7 @@ export function ProductModal({ open, onClose, onAdd, onBulkAdd }: {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!form.name || !form.price || !form.stock) return;
-    onAdd({
+    const newProduct: Product = {
       id: Math.random().toString(36).slice(2),
       name: form.name,
       description: form.description,
@@ -91,7 +91,9 @@ export function ProductModal({ open, onClose, onAdd, onBulkAdd }: {
       stock: parseInt(form.stock),
       category_id: form.category_id,
       category: getCategoryName(form.category_id)
-    } as any);
+    };
+
+    onAdd(newProduct);
     setForm({ name: "", description: "", price: "", img_url: "", relevant: false, stock: "", category_id: 1 });
   };
 

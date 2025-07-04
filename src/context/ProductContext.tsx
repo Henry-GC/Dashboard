@@ -28,6 +28,7 @@ export function ProductProvider({ children }: { children: ReactNode }) {
       
     } catch (error) {
       // Puedes manejar el error aquí si lo deseas
+        console.error("Error fetching products:", error);
       setProducts([]);
     }
   };
