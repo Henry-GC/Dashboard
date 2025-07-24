@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 import { useProductContext } from "@/context/ProductContext";
+import { toast } from "sonner";
+import axios from "@/lib/axios-config";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -9,10 +11,8 @@ import { Product } from "./types";
 import { ProductModal } from "./ProductModal";
 import { EditProductModal } from "./EditProductModal";
 
-// ...eliminado initialProducts, ahora se usa el contexto
-
 export function ProductTable() {
-  const { products, setProducts } = useProductContext();
+  const { products, setProducts, refreshProducts } = useProductContext();
   const [pendingProducts, setPendingProducts] = useState<Product[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -27,8 +27,14 @@ export function ProductTable() {
       setEditModalOpen(true);
     }
   };
-  const handleDelete = (id: string) => {
-    setProducts(products.filter(p => p.id !== id));
+  const handleDelete = async (id: string) => {
+    try {
+      await axios.delete(`/adm/products/delete/${id}`);
+      setProducts(products.filter(p => p.id !== id));
+    } catch (err) {
+      alert("Error al eliminar el producto");
+      console.error("Error al eliminar el producto:", err);
+    }
   };
 
   const handleAddProduct = (product: Product) => {
@@ -40,14 +46,20 @@ export function ProductTable() {
   const handleUpload = () => {
     setShowConfirm(true);
   };
-  const handleConfirmUpload = () => {
-    // Aquí deberías hacer la petición al backend y luego refrescar productos
-    setProducts([...pendingProducts, ...products]);
-    setPendingProducts([]);
-    setShowConfirm(false);
-    setModalOpen(false);
-    // await refreshProducts(); // si quieres recargar desde backend
-    alert("Productos enviados al backend (simulado)");
+  const handleConfirmUpload = async () => {
+    try {
+      await axios.post("/adm/products/create", pendingProducts);
+      setPendingProducts([]);
+      setShowConfirm(false);
+      setModalOpen(false);
+      await refreshProducts();
+      toast.success("Productos agregados correctamente", {
+        style: { background: '#22c55e', color: '#fff' },
+      });
+    } catch (err) {
+      alert("Error al agregar productos");
+      console.error("Error al agregar productos:", err);
+    }
   };
 
   // Helper for category name
@@ -112,13 +124,13 @@ export function ProductTable() {
                 </tr>
               </thead>
               <tbody>
-                {pendingProducts.map((p) => (
-                  <tr key={p.id} className="border-b">
+                {pendingProducts.map((p,index) => (
+                  <tr key={index} className="border-b">
                     <td className="px-2 py-1">{p.name}</td>
                     <td className="px-2 py-1">{p.description}</td>
                     <td className="px-2 py-1">${p.price}</td>
                     <td className="px-2 py-1">
-                      {p.image ? <img src={p.image} alt={p.name} className="w-8 h-8 object-cover rounded" /> : <span className="text-muted-foreground">Sin imagen</span>}
+                      {p.img_url ? <img src={p.img_url} alt={p.name} className="w-8 h-8 object-cover rounded" /> : <span className="text-muted-foreground">Sin imagen</span>}
                     </td>
                     <td className="px-2 py-1">{p.relevant ? "Sí" : "No"}</td>
                     <td className="px-2 py-1">{p.stock}</td>
@@ -162,8 +174,8 @@ export function ProductTable() {
                           <td className="px-2 py-2">{product.description}</td>
                           <td className="px-2 py-2">${Number(product.price).toFixed(2)}</td>
                           <td className="px-2 py-2">
-                            {product.image ? (
-                              <img src={product.image} alt={product.name} className="w-10 h-10 object-cover rounded" />
+                            {product.img_url ? (
+                              <img src={product.img_url} alt={product.name} className="w-10 h-10 object-contain object-center rounded" />
                             ) : (
                               <span className="text-muted-foreground">Sin imagen</span>
                             )}
@@ -189,14 +201,16 @@ export function ProductTable() {
       <ProductModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
-        onAdd={handleAddProduct}
+        onAdd={handleAddProduct as any}
         onBulkAdd={handleBulkAdd}
+        refreshProducts={refreshProducts}
       />
       <EditProductModal
         open={editModalOpen}
         onClose={() => setEditModalOpen(false)}
         product={editProduct}
         onSave={handleSaveEdit}
+        refreshProducts={refreshProducts}
       />
       {showConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">

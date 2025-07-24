@@ -34,17 +34,17 @@ const data = {
   },
   teams: [
     {
-      name: "Acme Inc",
+      name: "AnonymousPC",
       logo: GalleryVerticalEnd,
       plan: "Enterprise",
     },
     {
-      name: "Acme Corp.",
+      name: "Rubitek",
       logo: AudioWaveform,
       plan: "Startup",
     },
     {
-      name: "Evil Corp.",
+      name: "Facibot",
       logo: Command,
       plan: "Free",
     },
@@ -61,6 +61,10 @@ const data = {
         {
           title: "Productos",
           url: "/dashboard/productos",
+        },
+        {
+          title: "Ensambles",
+          url: "/dashboard/ensambles",
         },
         {
           title: "Ordenes",

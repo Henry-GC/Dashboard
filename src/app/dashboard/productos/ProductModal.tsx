@@ -1,5 +1,9 @@
 "use client";
-import { useState, ChangeEvent, FormEvent } from "react";
+import { useState, ChangeEvent } from "react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import axios from "@/lib/axios-config";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Product } from "./types";
 import { SheetFooter } from "@/components/ui/sheet";
@@ -25,37 +29,52 @@ function getCategoryName(id: number) {
 export function ProductModal({ open, onClose, onAdd, onBulkAdd }: {
   open: boolean;
   onClose: () => void;
-  onAdd: (product: Product) => void;
+  onAdd: (product: Omit<Product, "id">) => void;
   onBulkAdd: (products: Product[]) => void;
+  refreshProducts: () => Promise<void>;
 }) {
-  const [form, setForm] = useState({
-    name: "",
-    description: "",
-    price: "",
-    img_url: "",
-    relevant: false,
-    stock: "",
-    category_id: 1,
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      description: "",
+      price: "",
+      img_url: "",
+      relevant: false,
+      stock: "",
+      category_id: 1,
+    },
+    validationSchema: Yup.object({
+      name: Yup.string().required("Campo obligatorio"),
+      price: Yup.number().required("Campo obligatorio"),
+      stock: Yup.number().required("Campo obligatorio"),
+    }),
+    onSubmit: (values, { resetForm }) => {
+      // Solo agrega a la lista local, no envía al backend
+      const newProduct = {
+        ...values,
+        price: Number(values.price),
+        stock: Number(values.stock),
+        image: values.img_url,
+        category: getCategoryName(Number(values.category_id)),
+      };
+      onAdd(newProduct);
+      resetForm();
+    },
   });
   const [excelProducts, setExcelProducts] = useState<Product[]>([]);
   const [tab, setTab] = useState<"manual" | "excel">("manual");
   const [dragActive, setDragActive] = useState(false);
 
+  // Para compatibilidad con drag & drop y file input
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const target = e.target as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
-    const { name, value, type } = target;
-    const checked = (target as HTMLInputElement).checked;
-    setForm(f => ({
-      ...f,
-      [name]: type === "checkbox" ? checked : value
-    }));
+    formik.handleChange(e);
   };
 
   // Handle file upload or drag & drop
   const handleImageFile = (file: File) => {
     // Simulate upload and get a URL (replace with real upload logic)
     const url = URL.createObjectURL(file);
-    setForm(f => ({ ...f, img_url: url }));
+    formik.setFieldValue("img_url", url);
   };
   const handleFileInput = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -78,24 +97,7 @@ export function ProductModal({ open, onClose, onAdd, onBulkAdd }: {
     }
   };
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    if (!form.name || !form.price || !form.stock) return;
-    const newProduct: Product = {
-      id: Math.random().toString(36).slice(2),
-      name: form.name,
-      description: form.description,
-      price: parseFloat(form.price),
-      image: form.img_url,
-      relevant: form.relevant,
-      stock: parseInt(form.stock),
-      category_id: form.category_id,
-      category: getCategoryName(form.category_id)
-    };
-
-    onAdd(newProduct);
-    setForm({ name: "", description: "", price: "", img_url: "", relevant: false, stock: "", category_id: 1 });
-  };
+  // handleSubmit ahora lo maneja formik
 
   // Excel upload handler (mock, real parsing should use xlsx or similar)
   const handleExcel = () => {
@@ -107,7 +109,7 @@ export function ProductModal({ open, onClose, onAdd, onBulkAdd }: {
         name: "Producto Excel 1",
         description: "Desc Excel 1",
         price: 100,
-        image: "",
+        img_url: "",
         relevant: false,
         stock: 5,
         category_id: 1,
@@ -118,7 +120,7 @@ export function ProductModal({ open, onClose, onAdd, onBulkAdd }: {
         name: "Producto Excel 2",
         description: "Desc Excel 2",
         price: 200,
-        image: "",
+        img_url: "",
         relevant: true,
         stock: 10,
         category_id: 2,
@@ -137,23 +139,23 @@ export function ProductModal({ open, onClose, onAdd, onBulkAdd }: {
             <Button variant={tab === "excel" ? "default" : "outline"} onClick={() => setTab("excel")}>Excel</Button>
           </div>
           {tab === "manual" ? (
-            <form onSubmit={handleSubmit} className="space-y-3">
+            <form onSubmit={formik.handleSubmit} className="space-y-3" autoComplete="off">
               <div>
                 <Label>Nombre</Label>
-                <Input name="name" value={form.name} onChange={handleChange} required />
+                <Input name="name" value={formik.values.name} onChange={handleChange} required />
               </div>
               <div>
                 <Label>Descripción</Label>
-                <textarea name="description" value={form.description} onChange={handleChange} rows={2} className="w-full border rounded px-2 py-1 resize-none" />
+                <textarea name="description" value={formik.values.description} onChange={handleChange} rows={2} className="w-full border rounded px-2 py-1 resize-none" />
               </div>
               <div>
                 <Label>Precio</Label>
-                <Input name="price" type="number" value={form.price} onChange={handleChange} required />
+                <Input name="price" type="number" value={formik.values.price} onChange={handleChange} required />
               </div>
               <div>
                 <Label>Imagen</Label>
                 <div className="flex flex-col gap-2">
-                  <Input name="img_url" value={form.img_url} onChange={handleChange} placeholder="Pega el enlace de la imagen" />
+                <Input name="img_url" value={formik.values.img_url} onChange={handleChange} placeholder="Pega el enlace de la imagen" />
                   <div
                     className={`border-2 border-dashed rounded p-4 text-center cursor-pointer transition ${dragActive ? "border-blue-500 bg-blue-50" : "border-muted"}`}
                     onDragOver={handleDragOver}
@@ -163,22 +165,22 @@ export function ProductModal({ open, onClose, onAdd, onBulkAdd }: {
                     <div className="mb-2">Arrastra y suelta una imagen aquí o</div>
                     <Input type="file" accept="image/*" onChange={handleFileInput} className="w-full" />
                   </div>
-                  {form.img_url && (
-                    <img src={form.img_url} alt="preview" className="w-24 h-24 object-cover rounded mx-auto mt-2" />
+                  {formik.values.img_url && (
+                    <img src={formik.values.img_url} alt="preview" className="w-24 h-24 object-cover rounded mx-auto mt-2" />
                   )}
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <input type="checkbox" name="relevant" checked={form.relevant} onChange={handleChange} />
+                <input type="checkbox" name="relevant" checked={formik.values.relevant} onChange={handleChange} />
                 <Label>Relevante</Label>
               </div>
               <div>
                 <Label>Stock</Label>
-                <Input name="stock" type="number" value={form.stock} onChange={handleChange} required />
+                <Input name="stock" type="number" value={formik.values.stock} onChange={handleChange} required />
               </div>
               <div>
                 <Label>Categoría</Label>
-                <select name="category_id" value={form.category_id} onChange={handleChange} className="w-full border rounded px-2 py-1">
+                <select name="category_id" value={formik.values.category_id} onChange={handleChange} className="w-full border rounded px-2 py-1">
                   {CATEGORIES.map(c => (
                     <option key={c.id} value={c.id}>{c.name}</option>
                   ))}
