@@ -1,6 +1,5 @@
 "use client";
-import { useState } from "react";
-import { useProductContext } from "@/context/ProductContext";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import axios from "@/lib/axios-config";
 import { Button } from "@/components/ui/button";
@@ -13,16 +12,45 @@ import { EditProductModal } from "./EditProductModal";
 import Image from "next/image";
 
 export function ProductTable() {
-  const { products, setProducts, refreshProducts } = useProductContext();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const [pendingProducts, setPendingProducts] = useState<Product[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editProduct, setEditProduct] = useState<Product | null>(null);
 
+  // Fetch products on component mount
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get('/adm/products');
+        setProducts(response.data || []);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        toast.error('Error al cargar los productos');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  const refreshProducts = async () => {
+    try {
+      const response = await axios.get('/adm/products');
+      setProducts(response.data || []);
+    } catch (error) {
+      console.error('Error refreshing products:', error);
+      toast.error('Error al actualizar los productos');
+    }
+  };
+
   // Placeholder handlers
   const handleEdit = (id: string) => {
-    const prod = products.find(p => p.id === id);
+    const prod = products.find((p: Product) => p.id === id);
     if (prod) {
       setEditProduct(prod);
       setEditModalOpen(true);
@@ -31,7 +59,7 @@ export function ProductTable() {
   const handleDelete = async (id: string) => {
     try {
       await axios.delete(`/adm/products/delete/${id}`);
-      setProducts(products.filter(p => p.id !== id));
+      setProducts(products.filter((p: Product) => p.id !== id));
     } catch (err) {
       alert("Error al eliminar el producto");
       console.error("Error al eliminar el producto:", err);
@@ -77,7 +105,7 @@ export function ProductTable() {
     6: "FUENTE DE PODER",
     7: "CARCASA",
     8: "ACCESORIOS",
-    9: "ENSAMBLE"
+    9: "LAPTOPS"
   };
 
   // Agrupar productos por categoría
@@ -91,8 +119,18 @@ export function ProductTable() {
 
   const handleSaveEdit = (updated: Product) => {
     // Aquí podrías actualizar el estado local si lo deseas
-    setProducts(products.map(p => p.id === updated.id ? updated : p));
+    setProducts(products.map((p: Product) => p.id === updated.id ? updated : p));
   };
+
+  if (loading) {
+    return (
+      <Card className="p-4">
+        <div className="flex items-center justify-center py-8">
+          <div className="text-muted-foreground">Cargando productos...</div>
+        </div>
+      </Card>
+    );
+  }
 
   return (
     <Card className="p-4">

@@ -8,22 +8,22 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { useProductContext } from "@/context/ProductContext";
-import { useBuildContext } from "@/context/BuildContext";
 import { Build, BuildComponent } from "./types";
+import { Product } from "../productos/types";
 
 export function EditBuildModal({ 
   open, 
   onClose, 
-  build
+  build,
+  onSave,
+  products
 }: {
   open: boolean;
   onClose: () => void;
   build: Build | null;
   onSave: (build: Build) => void;
+  products: Product[];
 }) {
-  const { products } = useProductContext();
-  const { refreshBuilds } = useBuildContext();
   const [components, setComponents] = useState<BuildComponent[]>([]);
 
   const formik = useFormik({
@@ -57,7 +57,9 @@ export function EditBuildModal({
 
         await axios.put(`/adm/builds/update/${build.id}`, buildData);
         
-        await refreshBuilds();
+        const updatedBuild = { ...build, ...buildData };
+        onSave(updatedBuild);
+        
         toast.success("Ensamble actualizado correctamente", {
           style: { background: '#22c55e', color: '#fff' },
         });

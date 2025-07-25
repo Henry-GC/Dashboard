@@ -18,7 +18,7 @@ const CATEGORIES = [
   { id: 6, code: "PSU", name: "FUENTE DE PODER" },
   { id: 7, code: "CASE", name: "CARCASA" },
   { id: 8, code: "ACC", name: "ACCESORIOS" },
-  { id: 9, code: "BLD", name: "ENSAMBLE" },
+  { id: 9, code: "LAP", name: "LAPTOPS" },
 ];
 
 function getCategoryName(id: number) {

@@ -1,36 +1,232 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Dashboard AnonymousPC
 
-## Getting Started
+Dashboard administrativo para AnonymousPC, una plataforma de comercio electrónico especializada en componentes de PC. Construido con Next.js 15, TypeScript y shadcn/ui.
 
-First, run the development server:
+## 🚀 Características
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Gestión de Productos**: Sistema completo de CRUD para componentes de PC con categorización automática
+- **Ensambles de PC**: Creación y gestión de configuraciones completas con selección de componentes
+- **Gestión de Órdenes**: Procesamiento y seguimiento de pedidos de clientes
+- **Dashboard de Registros**: Métricas y análisis de rendimiento del negocio
+- **Asistente Virtual**: Chat integrado con IA para ayuda contextual
+- **Interfaz Moderna**: Diseño responsivo con tema claro/oscuro
+
+## 🛠️ Stack Tecnológico
+
+- **Framework**: Next.js 15 (App Router)
+- **Lenguaje**: TypeScript
+- **Estilo**: Tailwind CSS + shadcn/ui
+- **Validación**: Formik + Yup
+- **HTTP Client**: Axios
+- **Iconos**: Lucide React
+- **Notificaciones**: Sonner
+- **Gestión de Estado**: React Context API
+
+## 📋 Prerrequisitos
+
+- Node.js 18.0 o superior
+- npm, yarn, pnpm, o bun
+- Backend API corriendo en el puerto 5000 (configurable)
+
+## 🔧 Instalación
+
+1. **Clonar el repositorio**
+   ```bash
+   git clone https://github.com/Henry-GC/Dashboard.git
+   cd dashboard
+   ```
+
+2. **Instalar dependencias**
+   ```bash
+   npm install
+   # o
+   yarn install
+   # o
+   pnpm install
+   ```
+
+3. **Configurar variables de entorno**
+   ```bash
+   # Copiar archivo de ejemplo
+   cp .env.example .env.local
+   
+   # Editar .env.local con los valores apropiados:
+   NEXT_PUBLIC_API_URL=http://localhost:5000
+   NEXT_PUBLIC_CHATBOT_URL=https://rag.anonymouspc.net/chatbot/chat
+   ```
+
+4. **Ejecutar el servidor de desarrollo**
+   ```bash
+   npm run dev
+   ```
+
+5. **Abrir en el navegador**
+   ```
+   http://localhost:3000
+   ```
+
+## 🏗️ Arquitectura
+
+### Gestión de Estado
+- **Local State**: Cada componente maneja sus propios datos mediante llamadas directas al backend
+- **No Context API**: Se eliminó el uso de React Context para evitar cargas innecesarias de datos
+- **Fetch on Demand**: Los datos se cargan únicamente cuando los componentes los necesitan
+- **Optimización**: Mejor rendimiento al evitar re-renders innecesarios
+
+### Patrón de Datos
+```typescript
+// Cada componente maneja su estado local
+const [products, setProducts] = useState<Product[]>([]);
+const [loading, setLoading] = useState(true);
+
+// Carga de datos al montar el componente
+useEffect(() => {
+  const fetchData = async () => {
+    const response = await axios.get('/adm/products');
+    setProducts(response.data || []);
+  };
+  fetchData();
+}, []);
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📁 Estructura del Proyecto
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+src/
+├── app/
+│   ├── dashboard/          # Páginas del dashboard  
+│   │   ├── productos/      # Gestión de productos (sin context)
+│   │   ├── ensambles/      # Gestión de ensambles (sin context)
+│   │   ├── ordenes/        # Gestión de órdenes
+│   │   └── registros/      # Dashboard de métricas
+│   └── globals.css         # Estilos globales
+├── components/
+│   ├── ui/                 # Componentes shadcn/ui
+│   ├── app-sidebar.tsx     # Navegación lateral
+│   └── ChatDrawer.tsx      # Asistente virtual
+├── hooks/
+│   └── use-mobile.ts       # Hook para detección móvil
+└── lib/
+    ├── axios-config.ts     # Configuración de Axios
+    └── utils.ts            # Utilidades compartidas
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🎯 Funcionalidades Principales
 
-## Learn More
+### Gestión de Productos
+- ✅ Crear, editar y eliminar productos
+- ✅ Categorización automática (CPU, GPU, RAM, etc.)
+- ✅ Carga masiva via Excel
+- ✅ Gestión de imágenes con drag & drop
+- ✅ Control de stock e inventario
 
-To learn more about Next.js, take a look at the following resources:
+### Ensambles de PC
+- ✅ Creación de configuraciones completas
+- ✅ Selección de componentes del inventario
+- ✅ Cálculo automático de precios
+- ✅ Gestión de cantidades por componente
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Sistema de Órdenes
+- ✅ Procesamiento de pedidos
+- ✅ Seguimiento de estados
+- ✅ Información detallada del cliente
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Dashboard de Análisis
+- ✅ Métricas de ventas por mes
+- ✅ Análisis de usuarios y visitas
+- ✅ Productos más vendidos
+- ✅ Sistema de notificaciones
 
-## Deploy on Vercel
+### Asistente Virtual
+- ✅ Chat contextual integrado
+- ✅ Ayuda específica por sección
+- ✅ Respuestas inteligentes basadas en contenido
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🔗 API Endpoints
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+El dashboard se conecta a los siguientes endpoints:
+
+```
+GET    /adm/products        # Obtener productos
+POST   /adm/products/create # Crear producto
+PUT    /adm/products/update/:id # Actualizar producto
+DELETE /adm/products/delete/:id # Eliminar producto
+
+GET    /adm/builds          # Obtener ensambles
+POST   /adm/builds/create   # Crear ensamble
+PUT    /adm/builds/update/:id # Actualizar ensamble
+DELETE /adm/builds/delete/:id # Eliminar ensamble
+```
+
+## 🎨 Componentes UI
+
+El proyecto utiliza shadcn/ui con los siguientes componentes:
+
+- **Navegación**: Sidebar, Breadcrumb
+- **Formularios**: Input, Label, Button
+- **Layout**: Card, Separator, Accordion
+- **Interacción**: Sheet, Dropdown, Tooltip
+- **Feedback**: Toast (Sonner), Badge
+
+## 🚀 Scripts Disponibles
+
+```bash
+npm run dev      # Servidor de desarrollo
+npm run build    # Build para producción
+npm run start    # Servidor de producción
+npm run lint     # Linting con ESLint
+```
+
+## 🔧 Configuración
+
+### Variables de Entorno
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:5000                      # URL del backend
+NEXT_PUBLIC_CHATBOT_URL=https://rag.anonymouspc.net/chatbot/chat # URL del asistente virtual
+```
+
+### Categorías de Productos
+
+```typescript
+const CATEGORY_MAP = {
+  1: "PROCESADOR",
+  2: "PLACA MADRE", 
+  3: "TARJETA GRAFICA",
+  4: "MEMORIA RAM",
+  5: "ALMACENAMIENTO",
+  6: "FUENTE DE PODER",
+  7: "CARCASA",
+  8: "ACCESORIOS",
+  9: "LAPTOPS"
+}
+```
+
+## 🎯 Próximas Características
+
+- [ ] Autenticación y autorización
+- [ ] Sistema de roles y permisos
+- [ ] Reportes avanzados en PDF
+- [ ] Integración con pasarelas de pago
+- [ ] API REST completa documentada
+- [ ] Tests unitarios y de integración
+
+## 🤝 Contribución
+
+1. Fork el proyecto
+2. Crear rama para feature (`git checkout -b feature/AmazingFeature`)
+3. Commit cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abrir Pull Request
+
+## 📝 Licencia
+
+Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
+
+## 👨‍💻 Desarrollado por
+
+**Henry-GC** - [GitHub](https://github.com/Henry-GC)
+
+---
+
+> AnonymousPC Dashboard - Gestión profesional para tu negocio de componentes de PC 🖥️
