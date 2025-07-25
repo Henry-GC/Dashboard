@@ -2,8 +2,6 @@
 import { useState, ChangeEvent } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import axios from "@/lib/axios-config";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Product } from "./types";
 import { SheetFooter } from "@/components/ui/sheet";

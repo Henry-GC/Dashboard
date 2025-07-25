@@ -109,7 +109,7 @@ export function EnsamblesTable() {
 
       {builds.length === 0 && (
         <div className="text-center text-muted-foreground py-8">
-          No hay ensambles registrados. Haga clic en "Agregar ensamble" para comenzar.
+          No hay ensambles registrados. Haga clic en {"Agregar ensamble"} para comenzar.
         </div>
       )}
 

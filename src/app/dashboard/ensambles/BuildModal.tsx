@@ -196,7 +196,7 @@ export function BuildModal({
 
             {components.length === 0 && (
               <div className="text-center text-muted-foreground py-4 border-2 border-dashed rounded">
-                No hay componentes agregados. Haga clic en "Agregar componente" para comenzar.
+                No hay componentes agregados. Haga clic en {"Agregar componente"} para comenzar.
               </div>
             )}
           </div>
