@@ -7,6 +7,7 @@ import { Product } from "./types";
 import { SheetFooter } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import Image from "next/image";
 
 const CATEGORIES = [
   { id: 1, code: "CPU", name: "PROCESADOR" },
@@ -164,7 +165,13 @@ export function ProductModal({ open, onClose, onAdd, onBulkAdd }: {
                     <Input type="file" accept="image/*" onChange={handleFileInput} className="w-full" />
                   </div>
                   {formik.values.img_url && (
-                    <img src={formik.values.img_url} alt="preview" className="w-24 h-24 object-cover rounded mx-auto mt-2" />
+                    <Image 
+                      src={formik.values.img_url} 
+                      alt="preview" 
+                      width={96} 
+                      height={96} 
+                      className="object-cover rounded mx-auto mt-2" 
+                    />
                   )}
                 </div>
               </div>

@@ -10,6 +10,7 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/
 import { Product } from "./types";
 import { ProductModal } from "./ProductModal";
 import { EditProductModal } from "./EditProductModal";
+import Image from "next/image";
 
 export function ProductTable() {
   const { products, setProducts, refreshProducts } = useProductContext();
@@ -37,8 +38,12 @@ export function ProductTable() {
     }
   };
 
-  const handleAddProduct = (product: Product) => {
-    setPendingProducts(prev => [...prev, product]);
+  const handleAddProduct = (product: Omit<Product, "id">) => {
+    const newProduct: Product = {
+      ...product,
+      id: Math.random().toString(36).slice(2) // Temporary ID for pending products
+    };
+    setPendingProducts(prev => [...prev, newProduct]);
   };
   const handleBulkAdd = (bulk: Product[]) => {
     setPendingProducts(prev => [...prev, ...bulk]);
@@ -84,10 +89,9 @@ export function ProductTable() {
 
   const totalProductos = products.length;
 
-  const handleSaveEdit = () => {
-  // const handleSaveEdit = (updated: Product) => {
+  const handleSaveEdit = (updated: Product) => {
     // Aquí podrías actualizar el estado local si lo deseas
-    // setProducts(prev => prev.map(p => p.id === updated.id ? updated : p));
+    setProducts(products.map(p => p.id === updated.id ? updated : p));
   };
 
   return (
@@ -130,7 +134,17 @@ export function ProductTable() {
                     <td className="px-2 py-1">{p.description}</td>
                     <td className="px-2 py-1">${p.price}</td>
                     <td className="px-2 py-1">
-                      {p.img_url ? <img src={p.img_url} alt={p.name} className="w-8 h-8 object-cover rounded" /> : <span className="text-muted-foreground">Sin imagen</span>}
+                      {p.img_url ? (
+                        <Image 
+                          src={p.img_url} 
+                          alt={p.name} 
+                          width={32} 
+                          height={32} 
+                          className="object-cover rounded" 
+                        />
+                      ) : (
+                        <span className="text-muted-foreground">Sin imagen</span>
+                      )}
                     </td>
                     <td className="px-2 py-1">{p.relevant ? "Sí" : "No"}</td>
                     <td className="px-2 py-1">{p.stock}</td>
@@ -175,7 +189,13 @@ export function ProductTable() {
                           <td className="px-2 py-2">${Number(product.price).toFixed(2)}</td>
                           <td className="px-2 py-2">
                             {product.img_url ? (
-                              <img src={product.img_url} alt={product.name} className="w-10 h-10 object-contain object-center rounded" />
+                              <Image 
+                                src={product.img_url} 
+                                alt={product.name} 
+                                width={40} 
+                                height={40} 
+                                className="object-contain object-center rounded" 
+                              />
                             ) : (
                               <span className="text-muted-foreground">Sin imagen</span>
                             )}
@@ -201,7 +221,7 @@ export function ProductTable() {
       <ProductModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
-        onAdd={handleAddProduct as any}
+        onAdd={handleAddProduct}
         onBulkAdd={handleBulkAdd}
         refreshProducts={refreshProducts}
       />

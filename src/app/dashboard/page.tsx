@@ -21,7 +21,7 @@ export default function App () {
     } else {
       router.push("/dashboard/registros");
     }
-  },[])
+  },[router])
 
   return (
     <>

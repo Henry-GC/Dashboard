@@ -8,9 +8,10 @@ import { toast } from "sonner";
 import axios from "@/lib/axios-config";
 import { useProductContext } from "@/context/ProductContext";
 import { useBuildContext } from "@/context/BuildContext";
-import { Build } from "./types";
+import { Build, BuildComponent } from "./types";
 import { BuildModal } from "./BuildModal";
 import { EditBuildModal } from "./EditBuildModal";
+import Image from "next/image";
 
 export function EnsamblesTable() {
   const { products } = useProductContext();
@@ -44,7 +45,7 @@ export function EnsamblesTable() {
     setBuilds(builds.map(b => b.id === updatedBuild.id ? updatedBuild : b));
   };
 
-  const getComponentsList = (components: any[]) => {
+  const getComponentsList = (components: BuildComponent[]) => {
     return components.map((comp, index) => {
       const product = products.find(p => p.id === comp.product_id);
       return (
@@ -82,7 +83,13 @@ export function EnsamblesTable() {
               </div>
               {build.img_url && (
                 <div className="mb-2">
-                  <img src={build.img_url} alt={build.name} className="w-20 h-20 object-cover rounded" />
+                  <Image 
+                    src={build.img_url} 
+                    alt={build.name} 
+                    width={80} 
+                    height={80} 
+                    className="object-cover rounded" 
+                  />
                 </div>
               )}
               <div className="mb-2">
