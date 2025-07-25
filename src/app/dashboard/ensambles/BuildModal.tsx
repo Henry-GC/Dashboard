@@ -14,8 +14,7 @@ import { Build, BuildComponent } from "./types";
 
 export function BuildModal({ 
   open, 
-  onClose, 
-  onSave
+  onClose
 }: {
   open: boolean;
   onClose: () => void;
@@ -80,11 +79,6 @@ export function BuildModal({
     const updated = [...components];
     updated[index] = { ...updated[index], [field]: value };
     setComponents(updated);
-  };
-
-  const getProductName = (productId: string) => {
-    const product = products.find(p => p.id === productId);
-    return product ? product.name : "Producto no encontrado";
   };
 
   if (!open) return null;

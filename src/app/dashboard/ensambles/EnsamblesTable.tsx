@@ -14,7 +14,7 @@ import { EditBuildModal } from "./EditBuildModal";
 
 export function EnsamblesTable() {
   const { products } = useProductContext();
-  const { builds, setBuilds, refreshBuilds } = useBuildContext();
+  const { builds, setBuilds } = useBuildContext();
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editBuild, setEditBuild] = useState<Build | null>(null);
