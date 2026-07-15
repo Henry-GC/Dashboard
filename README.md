@@ -25,7 +25,7 @@ Dashboard administrativo para AnonymousPC, una plataforma de comercio electróni
 ## 📋 Prerrequisitos
 
 - Node.js 18.0 o superior
-- npm, yarn, pnpm, o bun
+- pnpm (recomendado) — instalar con `npm install -g pnpm`
 - Backend API corriendo en el puerto 5000 (configurable)
 
 ## 🔧 Instalación
@@ -38,10 +38,6 @@ Dashboard administrativo para AnonymousPC, una plataforma de comercio electróni
 
 2. **Instalar dependencias**
    ```bash
-   npm install
-   # o
-   yarn install
-   # o
    pnpm install
    ```
 
@@ -57,7 +53,7 @@ Dashboard administrativo para AnonymousPC, una plataforma de comercio electróni
 
 4. **Ejecutar el servidor de desarrollo**
    ```bash
-   npm run dev
+   pnpm dev
    ```
 
 5. **Abrir en el navegador**
@@ -171,10 +167,10 @@ El proyecto utiliza shadcn/ui con los siguientes componentes:
 ## 🚀 Scripts Disponibles
 
 ```bash
-npm run dev      # Servidor de desarrollo
-npm run build    # Build para producción
-npm run start    # Servidor de producción
-npm run lint     # Linting con ESLint
+pnpm dev      # Servidor de desarrollo
+pnpm build    # Build para producción
+pnpm start    # Servidor de producción
+pnpm lint     # Linting con ESLint
 ```
 
 ## 🔧 Configuración

@@ -44,12 +44,12 @@ API ← axios-config ← Local Component State ← Dashboard Layout ← Page Com
 
 ```bash
 # Development server
-npm run dev           # Starts on localhost:3000
+pnpm dev           # Starts on localhost:3000
 
 # Linting and building
-npm run lint         # ESLint with Next.js config
-npm run build        # Production build
-npm start           # Production server
+pnpm lint         # ESLint with Next.js config
+pnpm build        # Production build
+pnpm start        # Production server
 ```
 
 ## Project-Specific Conventions
