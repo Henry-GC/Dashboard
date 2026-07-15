@@ -51,7 +51,7 @@ importers:
         specifier: ^0.525.0
         version: 0.525.0(react@19.2.7)
       next:
-        specifier: 15.3.4
+        specifier: 15.3.8
         version: 15.3.4(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       next-themes:
         specifier: ^0.4.6
