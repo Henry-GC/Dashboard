@@ -168,6 +168,17 @@ export function LoginForm({
         Al continuar, aceptas nuestros <a href="#">Términos de Servicio</a>{" "}
         y <a href="#">Política de Privacidad</a>.
       </div>
+      <div className="text-muted-foreground text-center text-xs mt-2">
+        Desarrollado por{" "}
+        <a
+          href="https://henrygc.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-bold hover:text-primary underline underline-offset-4"
+        >
+          HenryGC
+        </a>
+      </div>
     </div>
   )
 }
